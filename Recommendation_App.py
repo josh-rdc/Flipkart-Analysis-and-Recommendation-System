@@ -5,12 +5,13 @@ import ast
 import os
 import numpy as np
 
-# Load DataFrames
-@st.cache_data
-def import_csv_dataset(file_path):
-    df = pd.read_csv(file_path, header=0, encoding='latin-1')
-    return df
+from Utilities.Functions import import_csv_dataset
+from Utilities.Functions import load_similarity_matrix
+from Utilities.Functions import get_product_details
+from Utilities.Functions import get_product_images
+from Utilities.Functions import get_top_5_similar
 
+# Load DataFrames
 flipkart_data = r"Dataset\flipkart_com-products.csv"
 flipkart_data_df3_path = r"flipkart_data_df3.csv"
 
@@ -20,70 +21,83 @@ flipkart_data_df3 = import_csv_dataset(flipkart_data_df3_path)
 flipkart_id_name = flipkart_data_df[['pid', 'product_name']]
 flipkart_id_image = flipkart_data_df[['pid', 'image']]
 
-# Load cosine similarity matrix
-@st.cache_resource
-def load_similarity_matrix():
-    folder_path = "RecommendationFile"
+# Add flipkart_id_name['product_name'] to flipkart_data_df3
+flipkart_data_df3 = pd.merge(flipkart_data_df3, flipkart_id_name, on='pid')
 
-    # Load all parts
-    num_parts = 50
-    cosine_sim_parts = []
-
-    for i in range(num_parts):
-        file_path = os.path.join(folder_path, f'cosine_sim_part_{i}.pkl')
-        with open(file_path, 'rb') as f:
-            cosine_sim_parts.append(pickle.load(f))
-
-    # Merge into a single array
-    cosine_sim = np.vstack(cosine_sim_parts)
-
-    # print("Cosine similarity matrix successfully reconstructed.")
-
-    return cosine_sim
-
-cosine_sim = load_similarity_matrix()
-
-# Function to get product details
-def get_product_details(pid, df):
-    product = df[df['pid'] == pid].iloc[0]
-    return {
-        "brand": product['brand'],
-        "category": product['category_0'],
-        "retail_price": product['retail_price'],
-        "discounted_price": product['discounted_price'],
-        "description": product['description']
-    }
-
-# Function to get image URLs from flipkart_id_image dataframe
-def get_product_images(pid):
-    image_row = flipkart_id_image[flipkart_id_image['pid'] == pid]['image']
-    if not image_row.empty:
-        images = ast.literal_eval(image_row.values[0])  # Convert string list to actual list
-        return images
-    return []
-
-# Get Top 5 Similar Products
-def get_top_5_similar(index, df, df_name, cosine_sim):
-    pid = df.loc[index, 'pid']
-    product_name = df_name.loc[df_name['pid'] == pid, 'product_name'].values[0]
-
-    sim_scores = list(enumerate(cosine_sim[index]))
-    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)[1:6]
-    top_indices = [i[0] for i in sim_scores]
-
-    top_pids = df.loc[top_indices, 'pid'].values
-    top_names = df_name.loc[df_name['pid'].isin(top_pids), 'product_name'].values
-
-    return pid, product_name, top_pids, top_names
-
-# Streamlit UI
 st.title("🛒 Flipkart Product Recommendation System")
 
-# Dropdown to select product
-selected_product = st.selectbox(
-    "Select a product:",
-    flipkart_id_name["product_name"].values
-)
+# Load Cosine Similarity Matrix
+cosine_sim = load_similarity_matrix()
+
+# Sidebar Taskbar for Product Selection
+# selected_product = st.sidebar.selectbox(
+#     "🔍 Select a Product:",
+#     flipkart_id_name["product_name"].values
+# )
+# # Select Main Category 
+# main_categories = sorted(flipkart_data_df3["category_0"].unique())  # Sorting applied
+# selected_main_category = st.sidebar.selectbox("Select Main Category:", main_categories)
+
+# # Filter for Category 1 
+# filtered_df1 = flipkart_data_df3[flipkart_data_df3["category_0"] == selected_main_category]
+# categories_1 = sorted(filtered_df1["category_1"].unique())  # Sorting applied
+# selected_category_1 = st.sidebar.selectbox("Select Sub-Category 1:", categories_1)
+
+# # Filter for Category 2 
+# filtered_df2 = filtered_df1[filtered_df1["category_1"] == selected_category_1]
+# categories_2 = sorted(filtered_df2["category_2"].unique())  # Sorting applied
+# selected_category_2 = st.sidebar.selectbox("Select Sub-Category 2:", categories_2)
+
+# # Filter for Products
+# filtered_df3 = filtered_df2[filtered_df2["category_2"] == selected_category_2]
+# sorted_products = sorted(filtered_df3["product_name"].values)  # Sorting applied
+# selected_product = st.sidebar.selectbox("Select a Product:", sorted_products)
+import streamlit as st
+import pandas as pd
+
+# Ensure missing values are handled properly
+flipkart_data_df3.fillna("", inplace=True)  # Replace NaN with empty strings
+
+# Select Main Category 
+# Count frequency of each category
+category_counts = flipkart_data_df3["category_0"].value_counts()
+
+# Get top 30 categories based on frequency
+top_30_categories = sorted(category_counts.head(30).index)  # Sort alphabetically
+
+# Get remaining categories
+remaining_categories = sorted(category_counts.index.difference(top_30_categories))  # Sort alphabetically
+
+# Combine both lists
+sorted_categories = top_30_categories + remaining_categories  
+
+# Create dropdown with sorted categories
+selected_main_category = st.sidebar.selectbox("Select Main Category:", sorted_categories)
+
+
+# Filter for Category 1 (Allow Empty Option)
+filtered_df1 = flipkart_data_df3[flipkart_data_df3["category_0"] == selected_main_category]
+categories_1 = sorted(filtered_df1["category_1"].dropna().unique())  
+categories_1.insert(0, "All")  # Add an "All" option
+selected_category_1 = st.sidebar.selectbox("Select Sub-Category 1:", categories_1)
+
+# Apply filtering for Category 1
+if selected_category_1 != "All":
+    filtered_df1 = filtered_df1[filtered_df1["category_1"] == selected_category_1]
+
+# Filter for Category 2 (Allow Empty Option)
+categories_2 = sorted(filtered_df1["category_2"].dropna().unique())  
+categories_2.insert(0, "All")  # Add an "All" option
+selected_category_2 = st.sidebar.selectbox("Select Sub-Category 2:", categories_2)
+
+# Apply filtering for Category 2
+if selected_category_2 != "All":
+    filtered_df1 = filtered_df1[filtered_df1["category_2"] == selected_category_2]
+
+# Filter and Sort Products
+sorted_products = sorted(filtered_df1["product_name"].values)  
+selected_product = st.sidebar.selectbox("Select a Product:", sorted_products)
+
 
 # Get the product details and index
 if selected_product:
@@ -92,47 +106,85 @@ if selected_product:
 
     # Get details
     product_details = get_product_details(selected_pid, flipkart_data_df3)
-
-    # Display Product Details
-    st.subheader(f"🎯 Selected Product: {selected_product}")
-    st.write(f"**Brand:** {product_details['brand']}")
-    st.write(f"**Category:** {product_details['category']}")
-    st.write(f"**Retail Price:** {product_details['retail_price']}")
-    st.write(f"**Discounted Price:** {product_details['discounted_price']}")
-    st.write(f"**Description:** {product_details['description']}")
-
-    # Display Product Images in a Single Row (from URLs)
-    images = get_product_images(selected_pid)
-
-    if images:
-        cols = st.columns(len(images))  # Create dynamic columns based on the number of images
-        for col, img_url in zip(cols, images):
-            col.image(img_url, width=100)
-    else:
-        st.write("No images available.")
-
+    
     # Get Recommendations
     pid, product_name, top_pids, top_names = get_top_5_similar(selected_index, flipkart_data_df3, flipkart_id_name, cosine_sim)
+ 
+    col1, col2 = st.columns(2)
 
-    # Display Recommended Products
-    st.subheader("🔍 Top 5 Similar Products")
-    for i, (top_pid, top_name) in enumerate(zip(top_pids, top_names), start=1):
-        st.markdown(f"### {i}. {top_name}")
+    # Left Column: Selected Product
+    with col1:
+        with st.container(border=True,height=900):
+            st.subheader(f"🖱️ Selected Product")
+            st.markdown(f"### {selected_product}")
+            
+            # Create a DataFrame for better formatting
+            selected_product_df = pd.DataFrame({
+                "Attribute": ["Brand", "Category", "Retail Price", "Discounted Price", "Description"],
+                "Details": [
+                    product_details['brand'],
+                    product_details['category'],
+                    product_details['retail_price'],
+                    product_details['discounted_price'],
+                    product_details['description']
+                ]
+            })
 
-        # Get details
-        top_details = get_product_details(top_pid, flipkart_data_df3)
-        st.write(f"**Brand:** {top_details['brand']}")
-        st.write(f"**Category:** {top_details['category']}")
-        st.write(f"**Retail Price:** {top_details['retail_price']}")
-        st.write(f"**Discounted Price:** {top_details['discounted_price']}")
-        st.write(f"**Description:** {top_details['description']}")
+            # Display as a table
+            st.table(selected_product_df)
 
-        # Display Product Images in a Single Row (from URLs)
-        top_images = get_product_images(top_pid)
+            # Display Product Images
+            images = get_product_images(selected_pid, flipkart_id_image)
 
-        if top_images:
-            cols = st.columns(len(top_images))  # Create dynamic columns based on number of images
-            for col, img_url in zip(cols, top_images):
-                col.image(img_url, width=100)
-        else:
-            st.write("No images available.")
+            if images:
+                img_cols = st.columns(len(images))  # Create dynamic columns for images
+                for col, img_url in zip(img_cols, images):
+                    col.image(img_url, width=100)
+            else:
+                st.write("No images available.")
+
+    # Right Column: Top 5 Similar Products
+    with col2:
+        with st.container(border=True, height=900):
+            st.subheader("🔍 Top 5 Similar Products")
+
+            # Get recommendations
+            pid, product_name, top_pids, top_names = get_top_5_similar(selected_index, flipkart_data_df3, flipkart_id_name, cosine_sim)
+
+            # Add a slider in the sidebar to select the Top product
+            selected_index = st.sidebar.slider("Select a Top Product:", 1, 5, 1) - 1  # Convert to zero-based index
+
+            # Get the selected product details
+            top_pid = top_pids[selected_index]
+            top_name = top_names[selected_index]
+
+            # with st.container(border=True):
+            st.markdown(f"### {top_name}")
+
+            # Get product details
+            top_details = get_product_details(top_pid, flipkart_data_df3)
+
+            # Create a DataFrame for the recommended product details
+            top_product_df = pd.DataFrame({
+                "Attribute": ["Brand", "Category", "Retail Price", "Discounted Price", "Description"],
+                "Details": [
+                    top_details['brand'],
+                    top_details['category'],
+                    top_details['retail_price'],
+                    top_details['discounted_price'],
+                    top_details['description']
+                ]
+            })
+
+            # Display as a table
+            st.table(top_product_df)
+
+            # Display Product Images
+            top_images = get_product_images(top_pid, flipkart_id_image)
+
+            if top_images:
+                img_cols = st.columns(len(top_images))  # Create dynamic columns for images
+                for col, img_url in zip(img_cols, top_images):
+                    col.image(img_url, width=100)
+            else:
+                st.write("No images available.")
