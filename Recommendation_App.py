@@ -12,8 +12,8 @@ from Utilities.Functions import get_product_images
 from Utilities.Functions import get_top_5_similar
 
 # Load DataFrames
-flipkart_data = r"Dataset\flipkart_com-products.csv"
-flipkart_data_df3_path = r"flipkart_data_df3.csv"
+flipkart_data = "Dataset/flipkart_com-products.csv"
+flipkart_data_df3_path = "flipkart_data_df3.csv"
 
 flipkart_data_df = import_csv_dataset(flipkart_data)
 flipkart_data_df3 = import_csv_dataset(flipkart_data_df3_path)
