@@ -171,10 +171,22 @@ if selected_product:
             top_images = get_product_images(top_pid, flipkart_id_image)
             st.write(top_images)  # Debugging: Check URLs in cloud
 
+            from Utilities.Functions import fetch_image
 
-            if top_images:
-                img_cols = st.columns(len(top_images))  # Create dynamic columns for images
-                for col, img_url in zip(img_cols, top_images):
-                    col.image(img_url, width=100)
-            else:
-                st.write("No images available.")
+            # Fetch and display images
+            img_objects = [fetch_image(img_url) for img_url in top_images]
+
+            img_cols = st.columns(len(img_objects))
+            for col, img_obj in zip(img_cols, img_objects):
+                if img_obj:
+                    col.image(img_obj, width=100)
+                else:
+                    col.write("❌ Image not available")
+
+
+            # if top_images:
+            #     img_cols = st.columns(len(top_images))  # Create dynamic columns for images
+            #     for col, img_url in zip(img_cols, top_images):
+            #         col.image(img_url, width=100)
+            # else:
+            #     st.write("No images available.")

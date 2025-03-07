@@ -83,6 +83,7 @@ def get_product_images(pid, df):
 #     top_names = df_name.loc[df_name['pid'].isin(top_pids), 'product_name'].values
 
 #     return pid, product_name, top_pids, top_names
+
 # Get Top 5 Similar Products (Updated)
 def get_top_5_similar(index, df, df_name):
     pid = df.loc[index, 'pid']
@@ -97,3 +98,17 @@ def get_top_5_similar(index, df, df_name):
     top_names = df_name.loc[df_name['pid'].isin(top_pids), 'product_name'].values
 
     return pid, product_name, top_pids, top_names
+
+
+import requests
+from PIL import Image
+from io import BytesIO
+
+def fetch_image(img_url):
+    try:
+        response = requests.get(img_url, timeout=5)
+        response.raise_for_status()  # Raise error for failed requests
+        return Image.open(BytesIO(response.content))
+    except requests.exceptions.RequestException as e:
+        st.write(f"Image failed to load: {e}")
+        return None
