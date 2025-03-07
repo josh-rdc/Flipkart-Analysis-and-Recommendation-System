@@ -98,7 +98,7 @@ pyproj==3.7.0
 # PySocks @ file:///C:/ci_310/pysocks_1642089375450/work
 # python-dateutil @ file:///home/conda/feedstock_root/build_artifacts/python-dateutil_1733215673016/work
 # pytz @ file:///C:/b/abs_6ap4tsz1ox/croot/pytz_1713974360290/work
-pywin32==307
+# pywin32==307
 # PyYAML @ file:///C:/b/abs_14xkfs39bx/croot/pyyaml_1728657968772/work
 # pyzmq @ file:///D:/bld/pyzmq_1738270977186/work
 # rasterio==1.4.3
