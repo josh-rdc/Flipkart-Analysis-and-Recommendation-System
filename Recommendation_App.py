@@ -106,6 +106,11 @@ if selected_product:
                 ]
             })
 
+            
+            # Ensure all values are strings
+            selected_product_df["Attribute"] = selected_product_df["Attribute"].astype(str)
+            selected_product_df["Details"] = selected_product_df["Details"].astype(str)
+
             # Display as a table
             st.table(selected_product_df)
 
@@ -153,6 +158,11 @@ if selected_product:
                     str(top_details['description'])
                 ]
             })
+
+            
+            # Ensure all values are strings
+            top_product_df["Attribute"] = top_product_df["Attribute"].astype(str)
+            top_product_df["Details"] = top_product_df["Details"].astype(str)
 
             # Display as a table
             st.table(top_product_df)
