@@ -138,3 +138,4 @@ xgboost==2.1.4
 xyzservices==2025.1.0
 # yarl @ file:///C:/b/abs_281qby2vim/croot/yarl_1732546854547/work
 # zipp @ file:///home/conda/feedstock_root/build_artifacts/zipp_1732827521216/work
+lws 
