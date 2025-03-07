@@ -34,7 +34,7 @@ def create_similarity_matrix(df):
     # df['description'] = df['description'].apply(preprocess_text)
     
     # Create TF-IDF Vectorizer
-    tfidf = TfidfVectorizer(stop_words="english", max_features=300)
+    tfidf = TfidfVectorizer(stop_words="english", max_features=500)
     tfidf_matrix = tfidf.fit_transform(df['description'])
     
     cosine_sim = cosine_similarity(tfidf_matrix,
