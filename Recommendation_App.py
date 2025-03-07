@@ -26,6 +26,7 @@ flipkart_id_image = flipkart_data_df[['pid', 'image']]
 # Add flipkart_id_name['product_name'] to flipkart_data_df3
 flipkart_data_df3 = pd.merge(flipkart_data_df3, flipkart_id_name, on='pid')
 
+st.set_page_config(layout='wide')
 st.title("🛒 Flipkart Product Recommendation System")
 
 # Load Cosine Similarity Matrix
