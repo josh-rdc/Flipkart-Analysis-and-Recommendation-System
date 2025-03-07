@@ -169,6 +169,8 @@ if selected_product:
 
             # Display Product Images
             top_images = get_product_images(top_pid, flipkart_id_image)
+            st.write(top_images)  # Debugging: Check URLs in cloud
+
 
             if top_images:
                 img_cols = st.columns(len(top_images))  # Create dynamic columns for images
