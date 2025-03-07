@@ -10,6 +10,7 @@ from Utilities.Functions import load_similarity_matrix
 from Utilities.Functions import get_product_details
 from Utilities.Functions import get_product_images
 from Utilities.Functions import get_top_5_similar
+from Utilities.SimilarityMatrix import create_similarity_matrix
 
 # Load DataFrames
 flipkart_data = "Dataset/flipkart_com-products.csv"
@@ -27,34 +28,9 @@ flipkart_data_df3 = pd.merge(flipkart_data_df3, flipkart_id_name, on='pid')
 st.title("🛒 Flipkart Product Recommendation System")
 
 # Load Cosine Similarity Matrix
-cosine_sim = load_similarity_matrix()
+cosine_sim = create_similarity_matrix(flipkart_data_df3)
 
 # Sidebar Taskbar for Product Selection
-# selected_product = st.sidebar.selectbox(
-#     "🔍 Select a Product:",
-#     flipkart_id_name["product_name"].values
-# )
-# # Select Main Category 
-# main_categories = sorted(flipkart_data_df3["category_0"].unique())  # Sorting applied
-# selected_main_category = st.sidebar.selectbox("Select Main Category:", main_categories)
-
-# # Filter for Category 1 
-# filtered_df1 = flipkart_data_df3[flipkart_data_df3["category_0"] == selected_main_category]
-# categories_1 = sorted(filtered_df1["category_1"].unique())  # Sorting applied
-# selected_category_1 = st.sidebar.selectbox("Select Sub-Category 1:", categories_1)
-
-# # Filter for Category 2 
-# filtered_df2 = filtered_df1[filtered_df1["category_1"] == selected_category_1]
-# categories_2 = sorted(filtered_df2["category_2"].unique())  # Sorting applied
-# selected_category_2 = st.sidebar.selectbox("Select Sub-Category 2:", categories_2)
-
-# # Filter for Products
-# filtered_df3 = filtered_df2[filtered_df2["category_2"] == selected_category_2]
-# sorted_products = sorted(filtered_df3["product_name"].values)  # Sorting applied
-# selected_product = st.sidebar.selectbox("Select a Product:", sorted_products)
-import streamlit as st
-import pandas as pd
-
 # Ensure missing values are handled properly
 flipkart_data_df3.fillna("", inplace=True)  # Replace NaN with empty strings
 
