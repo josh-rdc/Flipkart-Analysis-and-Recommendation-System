@@ -6,15 +6,14 @@ import os
 import numpy as np
 
 from Utilities.Functions import import_csv_dataset
-from Utilities.Functions import load_similarity_matrix
+# from Utilities.Functions import load_similarity_matrix
 from Utilities.Functions import get_product_details
 from Utilities.Functions import get_product_images
 from Utilities.Functions import get_top_5_similar
-from Utilities.SimilarityMatrix import create_similarity_matrix
 
 # Load DataFrames
-flipkart_data = "Dataset/flipkart_com-products.csv"
-flipkart_data_df3_path = "flipkart_data_df3.csv"
+flipkart_data = r"Dataset\flipkart_com-products.csv"
+flipkart_data_df3_path = r"flipkart_data_df3.csv"
 
 flipkart_data_df = import_csv_dataset(flipkart_data)
 flipkart_data_df3 = import_csv_dataset(flipkart_data_df3_path)
@@ -28,8 +27,7 @@ flipkart_data_df3 = pd.merge(flipkart_data_df3, flipkart_id_name, on='pid')
 st.title("🛒 Flipkart Product Recommendation System")
 
 # Load Cosine Similarity Matrix
-cosine_sim = load_similarity_matrix()
-# cosine_sim = create_similarity_matrix(flipkart_data_df3)
+# cosine_sim = load_similarity_matrix()
 
 # Sidebar Taskbar for Product Selection
 # Ensure missing values are handled properly
@@ -85,7 +83,8 @@ if selected_product:
     product_details = get_product_details(selected_pid, flipkart_data_df3)
     
     # Get Recommendations
-    pid, product_name, top_pids, top_names = get_top_5_similar(selected_index, flipkart_data_df3, flipkart_id_name, cosine_sim)
+    # pid, product_name, top_pids, top_names = get_top_5_similar(selected_index, flipkart_data_df3, flipkart_id_name)
+    # pid, product_name, top_pids, top_names = get_top_5_similar(selected_index, flipkart_data_df3, flipkart_id_name, cosine_sim)
  
     col1, col2 = st.columns(2)
 
@@ -126,7 +125,9 @@ if selected_product:
             st.subheader("🔍 Top 5 Similar Products")
 
             # Get recommendations
-            pid, product_name, top_pids, top_names = get_top_5_similar(selected_index, flipkart_data_df3, flipkart_id_name, cosine_sim)
+            # pid, product_name, top_pids, top_names = get_top_5_similar(selected_index, flipkart_data_df3, flipkart_id_name, cosine_sim)
+            pid, product_name, top_pids, top_names = get_top_5_similar(selected_index, flipkart_data_df3, flipkart_id_name)
+
 
             # Add a slider in the sidebar to select the Top product
             selected_index = st.sidebar.slider("Select a Top Product:", 1, 5, 1) - 1  # Convert to zero-based index

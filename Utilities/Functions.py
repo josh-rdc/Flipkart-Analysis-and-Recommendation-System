@@ -13,26 +13,43 @@ def import_csv_dataset(file_path):
 
 
 # Load cosine similarity matrix
+# @st.cache_resource
+# def load_similarity_matrix():
+#     folder_path = "RecommendationFile"
+
+#     # Load all parts
+#     num_parts = 50
+#     cosine_sim_parts = []
+
+#     for i in range(num_parts):
+#         file_path = os.path.join(folder_path, f'cosine_sim_part_{i}.pkl')
+#         with open(file_path, 'rb') as f:
+#             cosine_sim_parts.append(pickle.load(f))
+
+#     # Merge into a single array
+#     cosine_sim = np.vstack(cosine_sim_parts)
+
+#     # print("Cosine similarity matrix successfully reconstructed.")
+
+#     return cosine_sim
+# Load only the necessary part of the similarity matrix
 @st.cache_data
-def load_similarity_matrix():
+def load_similarity_part(index):
     folder_path = "RecommendationFile"
+    rows_per_file = 400  # Since 20,000 rows are split into 50 files
 
-    # Load all parts
-    num_parts = 50
-    cosine_sim_parts = []
+    # Determine which file contains the selected index
+    file_number = index // rows_per_file
+    file_path = os.path.join(folder_path, f'cosine_sim_part_{file_number}.pkl')
 
-    for i in range(num_parts):
-        file_path = os.path.join(folder_path, f'cosine_sim_part_{i}.pkl')
-        with open(file_path, 'rb') as f:
-            cosine_sim_parts.append(pickle.load(f))
+    # Load the specific file
+    with open(file_path, 'rb') as f:
+        cosine_sim_part = pickle.load(f)
 
-    # Merge into a single array
-    cosine_sim = np.vstack(cosine_sim_parts)
+    # Determine the row index within this part
+    row_within_part = index % rows_per_file  
 
-    # print("Cosine similarity matrix successfully reconstructed.")
-
-    return cosine_sim
-
+    return cosine_sim_part[row_within_part]
 
 # Function to get product details
 def get_product_details(pid, df):
@@ -53,15 +70,29 @@ def get_product_images(pid, df):
         return images
     return []
 
-# Get Top 5 Similar Products
-def get_top_5_similar(index, df, df_name, cosine_sim):
+# # Get Top 5 Similar Products
+# def get_top_5_similar(index, df, df_name, cosine_sim):
+#     pid = df.loc[index, 'pid']
+#     product_name = df_name.loc[df_name['pid'] == pid, 'product_name'].values[0]
+
+#     sim_scores = list(enumerate(cosine_sim[index]))
+#     sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)[1:6]
+#     top_indices = [i[0] for i in sim_scores]
+
+#     top_pids = df.loc[top_indices, 'pid'].values
+#     top_names = df_name.loc[df_name['pid'].isin(top_pids), 'product_name'].values
+
+#     return pid, product_name, top_pids, top_names
+# Get Top 5 Similar Products (Updated)
+def get_top_5_similar(index, df, df_name):
     pid = df.loc[index, 'pid']
     product_name = df_name.loc[df_name['pid'] == pid, 'product_name'].values[0]
 
-    sim_scores = list(enumerate(cosine_sim[index]))
-    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)[1:6]
-    top_indices = [i[0] for i in sim_scores]
+    # Load only the relevant row from similarity matrix
+    sim_scores = list(enumerate(load_similarity_part(index)))
+    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)[1:6]  # Top 5 similar
 
+    top_indices = [i[0] for i in sim_scores]
     top_pids = df.loc[top_indices, 'pid'].values
     top_names = df_name.loc[df_name['pid'].isin(top_pids), 'product_name'].values
 
