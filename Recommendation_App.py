@@ -98,11 +98,11 @@ if selected_product:
             selected_product_df = pd.DataFrame({
                 "Attribute": ["Brand", "Category", "Retail Price", "Discounted Price", "Description"],
                 "Details": [
-                    product_details['brand'],
-                    product_details['category'],
-                    product_details['retail_price'],
-                    product_details['discounted_price'],
-                    product_details['description']
+                    str(product_details['brand']),
+                    str(product_details['category']),
+                    str(product_details['retail_price']),
+                    str(product_details['discounted_price']),
+                    str(product_details['description'])
                 ]
             })
 
@@ -146,11 +146,11 @@ if selected_product:
             top_product_df = pd.DataFrame({
                 "Attribute": ["Brand", "Category", "Retail Price", "Discounted Price", "Description"],
                 "Details": [
-                    top_details['brand'],
-                    top_details['category'],
-                    top_details['retail_price'],
-                    top_details['discounted_price'],
-                    top_details['description']
+                    str(top_details['brand']),
+                    str(top_details['category']),
+                    str(top_details['retail_price']),
+                    str(top_details['discounted_price']),
+                    str(top_details['description'])
                 ]
             })
 
