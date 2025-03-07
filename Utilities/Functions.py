@@ -13,7 +13,7 @@ def import_csv_dataset(file_path):
 
 
 # Load cosine similarity matrix
-@st.cache_resource
+@st.cache_data
 def load_similarity_matrix():
     folder_path = "RecommendationFile"
 
