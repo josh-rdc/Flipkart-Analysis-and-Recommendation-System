@@ -28,7 +28,8 @@ flipkart_data_df3 = pd.merge(flipkart_data_df3, flipkart_id_name, on='pid')
 st.title("🛒 Flipkart Product Recommendation System")
 
 # Load Cosine Similarity Matrix
-cosine_sim = create_similarity_matrix(flipkart_data_df3)
+cosine_sim = load_similarity_matrix()
+# cosine_sim = create_similarity_matrix(flipkart_data_df3)
 
 # Sidebar Taskbar for Product Selection
 # Ensure missing values are handled properly
