@@ -9,7 +9,10 @@ The whole analysis and development is divided into three main sections, (1) the 
 
 The details taken to perform and formulate the use-cases are presented and discussed in the following sections.
 - [Data Analysis and Preprocessing](#data-analysis-and-preprocessing)
-- [Demo](#demo)
+    - [Data Analysis](#data-analysis)
+    - [Data Cleaning](#data-cleaning)
+    - [Feature Engineering](#feature-engineering)
+- [Recommendation Web Application](#recommendation-web-application)
 - [Model](#model)
 - [Installing Locally](#installing-locally)
 - [References](#reference)
@@ -39,25 +42,28 @@ Features of the dataset presented in the following table:
 | `brand`                   | The brand of the product.                      |
 | `product_specifications`  | Technical details and specifications.          |
 
-The following features are dropped for this project: 
-1. The `crawl_timestamp` as this is the information during the scraping of the dataset and not the actual time it was sold at the website.
-2. The `uniq_id` and `product_url` which are website specific information, tagging create by the app and do not necessarily add information to the product.
 
 | Count of data with ratings | Distribution of ratings |
 | -------------------------- | ----------------------- |
 | ![Asset/RatingCount.png](Asset/RatingCount.png) | ![Asset/RatingDistribution.png](Asset/RatingDistribution.png) |
 
-Commonly, for such dataset, a rating model prediction is often developed such that we try to find which optimal features such as what kind of description must be used for product under a certain category and retail price range in order to obtain a high rating. But as evident in the count of products which have obtained a rating, the amount of data may not be enough to build an optimal model. The distribution of the rating is also highly skewed and imbalanced that pushing for such model would definitely result in a bad model.
+Commonly, for such dataset, a **rating model prediction** is often developed to find which optimal features such as *'what kind of description must be used for product under a certain category and retail price range in order to obtain a high rating'*. But as evident in the count of products which have obtained a rating, the amount of data may not be enough to build an optimal model. The distribution of the rating is also highly skewed and imbalanced that pushing for such model would definitely result in a bad model. 
 
 
 ---
 
-### Data Preprocessing
+### Data Cleaning
 1. **Expansion of Category Tree**
 
     The first process done was to expand the category tree into multiple columns, with main category and limiting up to two (2) sub-categories.
-    
-2. **Imputation of Null Values**
+
+2. **Dropping of Unusable Features**
+
+    The following features are dropped for this project: 
+    - The `crawl_timestamp` as this is the information during the scraping of the dataset and not the actual time it was sold at the website.
+    - The `uniq_id` and `product_url` which are website specific information, tagging create by the app and do not necessarily add information to the product.
+
+3. **Imputation of Null Values**
     
     Checking of the data, presented in the table below, showed that major features such as `retail_price`, `discounted_price`, `description`, and `brand` have some missing values for some of its instances. As this may affect the result when analaysis are performed, steps were taken to fill up these values. 
 
@@ -90,86 +96,33 @@ Commonly, for such dataset, a rating model prediction is often developed such th
 
     (c) For instances without `brand`, a value of "*Unknown*" was simply used. 
 
+4. **Cleaning of** `description`
 
+    Basic text preprocessing was performed to standardize the input for analysis. This included converting text to lowercase, removing special characters and extra spaces, and applying lemmatization to reduce words to their base forms. Common stopwords were also removed, except for negations like "not" and "no" to preserve meaning.
 
+### Feature Engineering
 
+1. **Discount Percentage**
 
-## Demo
+    A simple feature, `discount_percent`, was calculated to quantify the discount offered on each product. This was computed as the percentage reduction from the retail price to the discounted price. The aim here is to let the model gains insight into pricing strategies and potential consumer appeal based on discount magnitude.
 
+2. **TF-IDF**
+
+    To extract meaningful insights from product descriptions, TF-IDF vectorization was applied. 
+    
+    TF stands for **Term Frequency** and it measures the frequency of a term (i.e., a word or a phrase) in a document. The term frequency of a term `t` in a document `d` is calculated as the number of times `t` appears in `d`, divided by the total number of terms in `d`.
+
+    IDF stands for **Inverse Document Frequency** and it is used to determine how important a word is in a document collection. The formula for IDF is `log(N/df)` where `N` is the total number of documents in the collection, and `df` is the number of documents that contain the term.
+
+    The TfidfVectorizer was configured to ignore common English stop words and limit the feature space to the top 500 most important words. This transformation converts **textual descriptions into numerical representations**, capturing the significance of words relative to the entire dataset. 
+
+    **Basically, the higher the IDF score, the more important the term is in distinguishing between documents.**
+
+## Recommendation Web Application
+
+### Demo
 The web application was deployed in the Streamlit cloud and can be accessed at [Flipkart Recommendation System](https://flipkart-analysis-and-recommendation-system.streamlit.app/). 
 
-Sample results are shown below:
-<details open>
-<summary>Sample Images</summary>
-
-#### Detection
-![assets/Demo_ImageDetection.png](assets/Demo_ImageDetection.png)
-
-#### Segmentation
-![assets/Demo_ImageSegmentation.png](assets/Demo_ImageSegmentation.png)
-
-</details>
-
-<details close>
-<summary>Sample Videos</summary>
-
-#### Detection
-https://github.com/user-attachments/assets/832283af-ea58-44ef-b8da-a67ed4c0ee55
-
-#### Segmentation
-https://github.com/user-attachments/assets/2cedfe91-ea0d-4fab-b610-192d612bc400
-
-</details>
-
-<details close>
-   
-<summary>Sample Live Video Stream</summary>
-
-#### Segmentation
-
-https://github.com/user-attachments/assets/5d643db0-3a89-4c5f-890b-1a24ab020ade
-
-https://github.com/user-attachments/assets/f9134f57-3ba9-4183-b320-0ec204cbc206
-
-</details>
-
-## Dataset
-
-The dataset used to train the model comprises 24 classes of common grocery items found in the Philippines. These images were manually collected and annotated by the AI 231 class of UP Diliman (AY 2024–2025). To ensure the model's robustness, the dataset includes images captured under various environmental conditions, such as nighttime, daytime, and obstructed views.
-
-<details open>
-<summary>Image Dataset Summary</summary>
-
-| #   | Class              | Training Images | Validation Images | Total Images | Specific Brand/Variation                 | Unit of Measurement per Instance            |
-|-----|--------------------|-----------------|-------------------|--------------|------------------------------------------|---------------------------------------------|
-| 1   | Bottled Soda       | 477             | 58               | 535          | Coca-Cola (Coke Zero)                    | 1.9L bottle, 320mL bottle                   |
-| 2   | Cheese             | 310             | 40               | 350          | Eden (Classic)                           | 165g box, 45g pack                          |
-| 3   | Chocolate          | 459             | 59               | 518          | KitKat (Chocolate)                       | 36.5g pack                                  |
-| 4   | Coffee             | 404             | 41               | 445          | Nescafe Original (Classic)               | 52g twin pack, 28g pack                     |
-| 5   | Condensed Milk     | 370             | 46               | 416          | Alaska (Classic)                         | 208g can                                    |
-| 6   | Cooking Oil        | 467             | 55               | 522          | Simply Canola Oil                        | 1L bottle                                   |
-| 7   | Corned Beef        | 442             | 58               | 500          | Purefoods (Classic, Spicy)               | 150g, 210g, 380g can                        |
-| 8   | Garlic             | 317             | 33               | 350          | Whole                                    | Whole                                       |
-| 9   | Instant Noodles    | 431             | 42               | 473          | Lucky Me! (Sweet and Spicy)              | 80g pack                                    |
-| 10  | Ketchup            | 477             | 47               | 524          | UFC (Banana)                             | 530g                                        |
-| 11  | Lemon              | 324             | 38               | 362          | Whole                                    | Whole                                       |
-| 12  | All-purpose Cream  | 451             | 49               | 500          | Nestle (Classic)                         | 250g box                                    |
-| 13  | Mayonnaise         | 319             | 31               | 350          | Lady's Choice (Classic)                  | 700mL bottle                                |
-| 14  | Peanut Butter      | 485             | 35               | 520          | Lady's Choice, Skippy                    | 170g, 340g bottle                           |
-| 15  | Pasta              | 443             | 57               | 500          | Royal Linguine                           | 1kg pack                                    |
-| 16  | Pineapple Juice    | 449             | 50               | 499          | Del Monte (Fiber, ACE)                   | 240mL can                                   |
-| 17  | Crackers           | 462             | 47               | 509          | Skyflakes, Rebisco                       | 22g, 33g pack                               |
-| 18  | Sardines (Canned)  | 305             | 45               | 350          | 555 (Tomato)                             | 155g can                                    |
-| 19  | Pink Shampoo       | 444             | 56               | 500          | Sunsilk (Smooth and Manageable)          | 180mL bottle                                |
-| 20  | Soap               | 446             | 54               | 500          | Dove (Lavender)                          | 106g box                                    |
-| 21  | Soy Sauce          | 452             | 48               | 500          | Silverswan                                | 385mL bottle                                |
-| 22  | Toothpaste         | 456             | 44               | 500          | Colgate (Advanced White)                 | 160g box                                    |
-| 23  | Canned Tuna        | 461             | 61               | 522          | Century Tuna (Original, Hot and Spicy)   | 155g, 180g can                              |
-| 24  | Alcohol            | 426             | 34               | 460          | Green Cross (Ethyl)                      | 500ml bottle                                |
-
-</details>
-
-For dataset access requests, please feel free to contact me.
 
 ## Model  
 
