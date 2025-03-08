@@ -3,7 +3,7 @@
 This repository contains the data analysis and possible usecase (Recommendation Application and Discount Prediction) of the Flipkart Dataset.
 
 ## Table of Contents
-![assets/Demo_ImageDetection.png](asset/MethodOverview.png)
+![Asset/Demo_ImageDetection.png](asset/MethodOverview.png)
 
 The whole analysis and development is divided into three main sections, (1) the analysis and preprocessing of dataset, (2) development of the recommendation application, and (3) formulation of the discount prediction model.  
 
@@ -47,14 +47,27 @@ The following features are dropped for this project:
 1. **Expansion of Category Tree**
 
     The first process done was to expand the category tree into multiple columns, with main category and limiting up to two (2) sub-categories.
-
-2.**Imputation of Null Values**
-
+    
+2. **Imputation of Null Values**
+    
+    Checking showed that major features such as retail_price, discounted_price, description, and brand have
+    |    pid                  |      0   |
+    | ----------------------- | -------- |
+    | retail_price            |     78   |
+    | discounted_price        |     78   |
+    | is_FK_Advantage_product |      0   |
+    | description             |      2   |
+    | product_rating          |      0   |
+    | overall_rating          |      0   |
+    | brand                   |   5864   |
+    | category_0              |     0    |
+    | category_1              |    328   |
+    | category_2              |   1457   |
 
 
 ## Demo
 
-The deployed version of this project can be accessed at [Grocery Items Detection and Segmentation App](https://grocery-detection-segmentation-webapp.streamlit.app/). 
+The web application was deployed in the Streamlit cloud and can be accessed at [Flipkart Recommendation System](https://flipkart-analysis-and-recommendation-system.streamlit.app/). 
 
 Sample results are shown below:
 <details open>
