@@ -13,12 +13,15 @@ The details taken to perform and formulate the use-cases are presented and discu
     - [Data Cleaning](#data-cleaning)
     - [Feature Engineering](#feature-engineering)
 - [Recommendation Web Application](#recommendation-web-application)
-- [Model](#model)
-- [Installing Locally](#installing-locally)
-- [References](#reference)
+    - [Demoe](#demo)
+    - [Development](#development)
+    - [Installing Locally](#installing-locally)
+
+- [Contact](#contact)
 
 
 ## Data Analysis and Preprocessing
+Documentation is located in the [Flipkart Analysis](https://github.com/josh-rdc/Flipkart-Analysis-and-Recommendation-System/blob/main/Flipkart%20-%20Analysis%20and%20Discount%20Prediction.ipynb) notebook.
 
 ### Data Analysis
 Foremost, the dataset is obtained from [kaggle](https://www.kaggle.com/datasets/PromptCloudHQ/flipkart-products/data), a data science platform and online community for data scientists and machine learning practitioners under Google LLC.
@@ -100,6 +103,8 @@ Commonly, for such dataset, a **rating model prediction** is often developed to 
 
     Basic text preprocessing was performed to standardize the input for analysis. This included converting text to lowercase, removing special characters and extra spaces, and applying lemmatization to reduce words to their base forms. Common stopwords were also removed, except for negations like "not" and "no" to preserve meaning.
 
+--- 
+
 ### Feature Engineering
 
 1. **Discount Percentage**
@@ -126,10 +131,17 @@ Commonly, for such dataset, a **rating model prediction** is often developed to 
     **Basically, the higher the IDF score, the more important the term is in distinguishing between documents.**
 
 ## Recommendation Web Application
+Documentation is located in the [Flipkart Recommendation App](https://github.com/josh-rdc/Flipkart-Analysis-and-Recommendation-System/blob/main/Flipkart%20-%20Recommendation%20System.ipynb) notebook.
 
 ### Demo
 
 The web application was deployed in the Streamlit cloud and can be accessed at [Flipkart Recommendation System](https://flipkart-analysis-and-recommendation-system.streamlit.app/). 
+
+**Sample Images**
+
+| ![Asset/RecApp01.png](Asset/RecApp01.png) | ![Asset/RecApp02.png](Asset/RecApp02.png) |
+
+--- 
 
 ### Development
 
@@ -151,6 +163,8 @@ The web application was deployed in the Streamlit cloud and can be accessed at [
     ```
 
 - Using the generated cosine similarity matrix, the **top 5 most similar products** were identified for a given product.
+
+--- 
 
 ### Installing Locally
 
@@ -180,7 +194,44 @@ To run this project locally, please follow these steps:
    streamlit run Recommendation_App.py
    ```
 
+## Discount Prediction
+Documentation is located in the [Flipkart Discount Prediction](https://github.com/josh-rdc/Flipkart-Analysis-and-Recommendation-System/blob/main/Flipkart%20-%20Analysis%20and%20Discount%20Prediction.ipynb) notebook.
 
+For this dataset, we could assume that **products with discount are considered those that did not sell well during their launch or early selling period**. As preventive measure, we could build a discount prediction model based on products features such as their brand, category, range of retail price and description and predict the possible percentage of discount that may be tagged to them in the future and know which product need to have improve features to avoid having a high discount percentage. 
+
+### Data Preparation
+
+1. **Label Encoding** -  categorical features such as category, brand, and Flipkart Advantage product indicator were converted into numerical values using label encoding to make them interpretable by the model during training.
+
+2. **Standard Scaler** - since numerical features have varying ranges and distributions, **StandardScaler** was applied to normalize them, ensuring a consistent scale for improved model performance.
+
+3. **Train-Test Split** - the dataset was partitioned into 70% training and 30% testing data to allow the model to learn effectively while minimizing the risk of overfitting.
+
+---
+
+### Model Selection and Hyperparameter Tuning
+
+Model was arbitrarily chosen for this project, considering the limited time to perform experiment. XGBoost (Extreme-Gradient Boosting), a specialized form of decision tree model known for its overall robust performance to various dataset, was selected. 
+
+For hyperparameter tuning, [Optuna](https://optuna.org) was employed. Optuna is an open-source optimization tool that surpasses traditional search methods by using sophisticated algorithms like **Tree-structured Parzen Estimator (TPE)**. This optimization process iteratively refines the hyperparameter range to minimize the selected metric which was Mean Absolute Deviation (MAD).
+
+The range and result of the tuning after **ten (10) trials** is presented below:
+| Hyperparameter    | Range               | Tuned Values |
+|-----------------|-------------------|---------------------|
+| n estimators      | 50 to 100           | 67 |
+| max depth         | 2 to 15 (log scale) | 15 |
+| learning rate     | 0.1 to 0.25 (log scale) |  0.20 |
+| subsample         | 0.80 to 1.00          | 0.92 |
+
+Using the optimized model on the test dataset, an R-squared value of `63.32%` indicating a poor explanatory power of the features, and a high MAD of `19.86%` were obtained showing that more complex pre-processing of the dataset and further tuning of the parameters are required in order to create a more robust decision-support model. 
+
+## Conclusion and Recommendation
+
+1. As seen in the initial data analysis, the dataset exhibited significant variability, including long text fields, numerous special characters, skewed numerical distributions, and missing values—reflecting real-world data challenges. This required extensive preprocessing to create good model and a practical use-case application. Future improvements could include **more refined text processing for descriptions, categories, and specifications**, as well as **integrating global image features** (e.g., color channel statistics, histogram bins, texture, and spatial attributes) to enhance model performance.
+
+2. Using a simple text vectorization approach and cosine similarity matrix, a basic product recommendation system was developed. While this approach performed well for categories with clear similarities (e.g., clothing, bags, and shoes), **category-based filtering could improve recommendations by ensuring that only relevant products are suggested**. Future iterations could explore **hybrid recommendation models that combine content-based filtering with collaborative approaches**.
+
+3. Finally, a basic discount prediction model was implemented using arbitrary model selection and quick hyperparameter tuning. While the model's performance was suboptimal, achieving an R-squared score above 60% which indicates potential for further improvement. Future enhancements could involve **systematic hyperparameter tuning** (e.g., increasing trials to 100, employing Bayesian optimization) and **exploring alternative models to achieve better predictive accuracy**.
 
 ## Contact
 
