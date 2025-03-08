@@ -16,7 +16,7 @@ The details taken to perform and formulate the use-cases are presented and discu
     - [Demo](#demo)
     - [Development](#development)
     - [Installing Locally](#installing-locally)
-
+- [Conclusion and Recommendations](#conclusion-and-recommendations)
 - [Contact](#contact)
 
 
@@ -227,7 +227,7 @@ The range and result of the tuning after **ten (10) trials** is presented below:
 
 Using the optimized model on the test dataset, an R-squared value of `63.32%` indicating a poor explanatory power of the features, and a high MAD of `19.86%` were obtained showing that more complex pre-processing of the dataset and further tuning of the parameters are required in order to create a more robust decision-support model. 
 
-## Conclusion and Recommendation
+## Conclusion and Recommendations
 
 1. As seen in the initial data analysis, the dataset exhibited significant variability, including long text fields, numerous special characters, skewed numerical distributions, and missing values—reflecting real-world data challenges. This required extensive preprocessing to create good model and a practical use-case application. Given the limited time, technical debt was surely evident in this repository in which shortcuts were undertaken just to ensure necessary target features were obtained In the future, improvements could include **more refined text processing for descriptions, categories, and specifications**, as well as **integrating global image features** (e.g., color channel statistics, histogram bins, texture, and spatial attributes) to enhance model performance.
 
