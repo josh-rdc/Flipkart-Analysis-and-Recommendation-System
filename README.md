@@ -150,7 +150,7 @@ The web application was deployed in the Streamlit cloud and can be accessed at [
 
 **Sample Video Demo**
 
-https://github.com/user-attachments/assets/aaebfd23-c2ea-4655-8a1a-12854227432e
+https://github.com/user-attachments/assets/bcaa8613-0aca-456a-9895-63b2e549c9f8
 
 --- 
 
