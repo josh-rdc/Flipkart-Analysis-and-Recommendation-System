@@ -4,6 +4,7 @@ This repository contains the data analysis and possible usecase (Recommendation 
 
 ## Table of Contents
 ![assets/Demo_ImageDetection.png](asset/MethodOverview.png)
+
 The whole analysis and development is divided into three main sections, (1) the analysis and preprocessing of dataset, (2) development of the recommendation application, and (3) formulation of the discount prediction model.  
 
 The details taken to perform and formulate the use-cases are presented and discussed in the following sections.
@@ -44,7 +45,8 @@ The following features are dropped for this project:
 
 ### Analysis and Preprocessing
 1. **Expansion of Category Tree**
-The first process done was to expand the category tree into multiple columns, with main category and limiting up to two (2) sub-categories.
+
+    The first process done was to expand the category tree into multiple columns, with main category and limiting up to two (2) sub-categories.
 
 2.**Imputation of Null Values**
 
