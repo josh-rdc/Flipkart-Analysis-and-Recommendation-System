@@ -3,7 +3,7 @@
 This repository contains the data analysis and possible usecase (Recommendation Application and Discount Prediction) of the Flipkart Dataset.
 
 ## Table of Contents
-![Asset/Demo_ImageDetection.png](asset/MethodOverview.png)
+![Asset/MethodOverview.png](Asset/MethodOverview.png)
 
 The whole analysis and development is divided into three main sections, (1) the analysis and preprocessing of dataset, (2) development of the recommendation application, and (3) formulation of the discount prediction model.  
 
@@ -17,7 +17,7 @@ The details taken to perform and formulate the use-cases are presented and discu
 
 ## Data Analysis and Preprocessing
 
-### Dataset
+### Data Analysis
 Foremost, the dataset is obtained from [kaggle](https://www.kaggle.com/datasets/PromptCloudHQ/flipkart-products/data), a data science platform and online community for data scientists and machine learning practitioners under Google LLC.
 
 As defined in the website, it is a pre-crawled dataset, taken as subset of a bigger [dataset (more than 5.8 million products)](https://www.promptcloud.com/datastock-access-ready-to-use-datasets/?utm_source=fl-kaggle&utm_medium=referral) that was created by extracting data from **Flipkart.com, a leading Indian eCommerce store**.
@@ -43,14 +43,27 @@ The following features are dropped for this project:
 1. The `crawl_timestamp` as this is the information during the scraping of the dataset and not the actual time it was sold at the website.
 2. The `uniq_id` and `product_url` which are website specific information, tagging create by the app and do not necessarily add information to the product.
 
-### Analysis and Preprocessing
+| Count of data with ratings | Distribution of ratings |
+| -------------------------- | ----------------------- |
+| ![Asset/RatingCount.png](Asset/RatingCount.png) | ![Asset/RatingDistribution.png](Asset/RatingDistribution.png) |
+
+Commonly, for such dataset, a rating model prediction is often developed such that we try to find which optimal features such as what kind of description must be used for product under a certain category and retail price range in order to obtain a high rating. But as evident in the count of products which have obtained a rating, the amount of data may not be enough to build an optimal model. The distribution of the rating is also highly skewed and imbalanced that pushing for such model would definitely result in a bad model.
+
+
+---
+
+### Data Preprocessing
 1. **Expansion of Category Tree**
 
     The first process done was to expand the category tree into multiple columns, with main category and limiting up to two (2) sub-categories.
     
 2. **Imputation of Null Values**
     
-    Checking showed that major features such as retail_price, discounted_price, description, and brand have
+    Checking of the data, presented in the table below, showed that major features such as `retail_price`, `discounted_price`, `description`, and `brand` have some missing values for some of its instances. As this may affect the result when analaysis are performed, steps were taken to fill up these values. 
+
+    <details close>
+    <summary>Checking of Null Values</summary>
+
     |    pid                  |      0   |
     | ----------------------- | -------- |
     | retail_price            |     78   |
@@ -63,6 +76,21 @@ The following features are dropped for this project:
     | category_0              |     0    |
     | category_1              |    328   |
     | category_2              |   1457   |
+
+    </details>
+
+    (a) For data where `retail_price` and `discounted_price` are missing, the median price of products within the same main category was used. This approach was chosen because the price range varied significantly, with some extremely high values as seen in the plot below. Using the mean could have skewed the data and negatively impacted the model's performance.
+
+    ![Asset/RetailPricesPerCategory.png](Asset/RetailPricesPerCategory.png)
+    
+    Additionally, some `category_0` such as "*INKT INKT A5 Wiro Notebook A5...*" are too specific and can actually just be considered as "Toys & School Supplies" hence for the three items with no similar category, to help impute their retail and discount prices, their `category_0` was replaced with a more common ones.
+
+    (b) For data with missing `description`, observations showed that most product descriptions contain details from their specifications. Therefore, for instances where the description is blank, the product `specifications` were used instead. The content will be cleaned later during the preprocessing stage to prepare for tokenization.
+
+    (c) For instances without `brand`, a value of "*Unknown*" was simply used. 
+
+
+
 
 
 ## Demo
