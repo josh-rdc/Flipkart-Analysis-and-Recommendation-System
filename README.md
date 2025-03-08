@@ -147,6 +147,11 @@ The web application was deployed in the Streamlit cloud and can be accessed at [
 | --- | --- |
 | ![Asset/RecApp01.png](Asset/RecApp01.png) | ![Asset/RecApp02.png](Asset/RecApp02.png) |
 
+
+**Sample Video Demo**
+
+https://github.com/user-attachments/assets/aaebfd23-c2ea-4655-8a1a-12854227432e
+
 --- 
 
 ### Development
