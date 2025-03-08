@@ -13,7 +13,7 @@ The details taken to perform and formulate the use-cases are presented and discu
     - [Data Cleaning](#data-cleaning)
     - [Feature Engineering](#feature-engineering)
 - [Recommendation Web Application](#recommendation-web-application)
-    - [Demoe](#demo)
+    - [Demo](#demo)
     - [Development](#development)
     - [Installing Locally](#installing-locally)
 
@@ -139,6 +139,8 @@ The web application was deployed in the Streamlit cloud and can be accessed at [
 
 **Sample Images**
 
+| Sample Image 1 | Sample Image 2 |
+| --- | --- |
 | ![Asset/RecApp01.png](Asset/RecApp01.png) | ![Asset/RecApp02.png](Asset/RecApp02.png) |
 
 --- 
@@ -227,7 +229,7 @@ Using the optimized model on the test dataset, an R-squared value of `63.32%` in
 
 ## Conclusion and Recommendation
 
-1. As seen in the initial data analysis, the dataset exhibited significant variability, including long text fields, numerous special characters, skewed numerical distributions, and missing values—reflecting real-world data challenges. This required extensive preprocessing to create good model and a practical use-case application. Future improvements could include **more refined text processing for descriptions, categories, and specifications**, as well as **integrating global image features** (e.g., color channel statistics, histogram bins, texture, and spatial attributes) to enhance model performance.
+1. As seen in the initial data analysis, the dataset exhibited significant variability, including long text fields, numerous special characters, skewed numerical distributions, and missing values—reflecting real-world data challenges. This required extensive preprocessing to create good model and a practical use-case application. Given the limited time, technical debt was surely evident in this repository in which shortcuts were undertaken just to ensure necessary target features were obtained In the future, improvements could include **more refined text processing for descriptions, categories, and specifications**, as well as **integrating global image features** (e.g., color channel statistics, histogram bins, texture, and spatial attributes) to enhance model performance.
 
 2. Using a simple text vectorization approach and cosine similarity matrix, a basic product recommendation system was developed. While this approach performed well for categories with clear similarities (e.g., clothing, bags, and shoes), **category-based filtering could improve recommendations by ensuring that only relevant products are suggested**. Future iterations could explore **hybrid recommendation models that combine content-based filtering with collaborative approaches**.
 
