@@ -64,8 +64,9 @@ Commonly, for such dataset, a rating model prediction is often developed such th
     <details close>
     <summary>Checking of Null Values</summary>
 
-    |    pid                  |      0   |
+    |  feature                |  Count   |
     | ----------------------- | -------- |
+    |    pid                  |      0   |
     | retail_price            |     78   |
     | discounted_price        |     78   |
     | is_FK_Advantage_product |      0   |
