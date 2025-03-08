@@ -16,6 +16,10 @@ The details taken to perform and formulate the use-cases are presented and discu
     - [Demo](#demo)
     - [Development](#development)
     - [Installing Locally](#installing-locally)
+- [Discount Prediction](#discount-prediction)
+    -[Data Preparation](#data-preparation)
+    -[Model Selection and Hyperparameter Tuning](#model-selection-and-hyperparameter-tuning)
+    -[Results](#results)
 - [Conclusion and Recommendations](#conclusion-and-recommendations)
 - [Contact](#contact)
 
@@ -224,6 +228,11 @@ The range and result of the tuning after **ten (10) trials** is presented below:
 | max depth         | 2 to 15 (log scale) | 15 |
 | learning rate     | 0.1 to 0.25 (log scale) |  0.20 |
 | subsample         | 0.80 to 1.00          | 0.92 |
+
+---
+### Results
+
+![Asset/DiscountPredictionResult.png](Asset/DiscountPredictionResult.png)
 
 Using the optimized model on the test dataset, an R-squared value of `63.32%` indicating a poor explanatory power of the features, and a high MAD of `19.86%` were obtained showing that more complex pre-processing of the dataset and further tuning of the parameters are required in order to create a more robust decision-support model. 
 
