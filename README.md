@@ -61,7 +61,7 @@ Commonly, for such dataset, a **rating model prediction** is often developed to 
 
     The following features are dropped for this project: 
     - The `crawl_timestamp` as this is the information during the scraping of the dataset and not the actual time it was sold at the website.
-    - The `uniq_id` and `product_url` which are website specific information, tagging create by the app and do not necessarily add information to the product.
+    - The `uniq_id` and `product_url` which are website specific information, tagging created by the app and do not necessarily add information to the product.
 
 3. **Imputation of Null Values**
     
@@ -135,9 +135,8 @@ The web application was deployed in the Streamlit cloud and can be accessed at [
 
 - To develop the recommendation system, the cosine similarity was computed to determine the similarity between products based on their descriptions. **Cosine similarity** measures how close two text vectors are, regardless of their length, and is defined as:
 
-    <div align="center">  
-    $$ \text{cosine similarity} = \frac{A \cdot B}{\|A\| \|B\|} $$  
-    </div>  
+    ![Cosine Similarity](https://latex.codecogs.com/png.latex?\text{cosine%20similarity}%20=%20\frac{A%20\cdot%20B}{\|A\|%20\|B\|})
+
 
     where \( A \) and \( B \) are the TF-IDF vectors of two product descriptions.  
 
