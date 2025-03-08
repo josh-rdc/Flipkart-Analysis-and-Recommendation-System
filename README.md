@@ -109,6 +109,13 @@ Commonly, for such dataset, a **rating model prediction** is often developed to 
 2. **TF-IDF**
 
     To extract meaningful insights from product descriptions, TF-IDF vectorization was applied. 
+
+    ```
+    from sklearn.feature_extraction.text import TfidfVectorizer
+    
+    tfidf = TfidfVectorizer(stop_words="english", max_features=500)
+    tfidf_matrix = tfidf.fit_transform(dataframe['description'])
+    ```
     
     TF stands for **Term Frequency** and it measures the frequency of a term (i.e., a word or a phrase) in a document. The term frequency of a term `t` in a document `d` is calculated as the number of times `t` appears in `d`, divided by the total number of terms in `d`.
 
@@ -121,47 +128,45 @@ Commonly, for such dataset, a **rating model prediction** is often developed to 
 ## Recommendation Web Application
 
 ### Demo
+
 The web application was deployed in the Streamlit cloud and can be accessed at [Flipkart Recommendation System](https://flipkart-analysis-and-recommendation-system.streamlit.app/). 
 
+### Development
 
-## Model  
+- To develop the recommendation system, the cosine similarity was computed to determine the similarity between products based on their descriptions. **Cosine similarity** measures how close two text vectors are, regardless of their length, and is defined as:
 
-The application utilizes **YOLO11** by Ultralytics, the latest iteration in the YOLO series of real-time object detectors. YOLOv11 redefines object detection with cutting-edge accuracy, speed, and efficiency.  
+    <div align="center">  
+    $$ \text{cosine similarity} = \frac{A \cdot B}{\|A\| \|B\|} $$  
+    </div>  
 
-### Model Variations  
-YOLOv11 offers multiple variations to suit a wide range of tasks:  
-- **Nano (n)**: Optimized for lightweight deployment.  
-- **Small (s)**: Balances speed and accuracy for real-time use.  
-- **Medium (m)**: Enhanced performance for more complex scenarios.  
-- **Large (l)**: High-accuracy models for demanding tasks.  
-- **Xtra-large (x)**: Maximum accuracy for advanced applications.  
+    where \( A \) and \( B \) are the TF-IDF vectors of two product descriptions.  
 
-Supported tasks include:  
-- Object detection  
-- Segmentation  
-- Classification  
-- Pose estimation  
-- Oriented object detection  
+- The square matrix where each entry `sim(i,j)` represents the cosine similarity between product `i` and product `j`. Higher values indicate greater similarity between the two products such that *a similarity score of 1 means the descriptions are identical, while a score close to 0 indicates little to no similarity*.
 
-For more details on model parameters and performance benchmarks (e.g., on the COCO dataset), visit the [Ultralytics YOLO11 Model Card](https://docs.ultralytics.com/models/yolo11).  
+- The function was implemented as
 
-### Model Training
-Models are trained on NVIDIA A100-SXM4-40GB GPU. Training time ranges from ~1 to 10 hours depending on the model variation and configuration.
+    ```
+    from sklearn.metrics.pairwise import cosine_similarity
 
-## Installing Locally
+    cosine_sim = cosine_similarity(tfidf_matrix, tfidf_matrix)
+    ```
+
+- Using the generated cosine similarity matrix, the **top 5 most similar products** were identified for a given product.
+
+### Installing Locally
 
 To run this project locally, please follow these steps:
 
 1. Clone the repository:
 
    ```
-   git clone https://github.com/josh-rdc/grocery-detection-segmentation-webapp
+   git clone https://github.com/josh-rdc/Flipkart-Analysis-and-Recommendation-System
    ```
 
 2. Navigate to the project folder:
 
    ```
-   cd grocery-detection-segmentation-webapp
+   cd Flipkart-Analysis-and-Recommendation-System
    ```
 
 3. Install the required libraries:
@@ -173,22 +178,10 @@ To run this project locally, please follow these steps:
 4. Run the application:
 
    ```
-   streamlit run 🏠_Home.py
+   streamlit run Recommendation_App.py
    ```
 
-## Reference
 
-```
-@software{Jocher_Ultralytics_YOLO_2023,
-author = {Jocher, Glenn and Qiu, Jing and Chaurasia, Ayush},
-license = {AGPL-3.0},
-month = jan,
-title = {{Ultralytics YOLO}},
-url = {https://github.com/ultralytics/ultralytics},
-version = {8.0.0},
-year = {2023}
-}
-```
 
 ## Contact
 
